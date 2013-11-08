@@ -1,6 +1,7 @@
 from __future__ import division
 from optparse import OptionParser
 from lxml import html
+from urllib import urlopen
 # from time import strftime
 # today=strftime("%Y-%m-%d") #today's date
 
@@ -19,15 +20,19 @@ def getAppCategory():
 
 def get_ids_from_html(html_file_name):
     '''
-    open the html from disk, 
+    open the html from disk or url, 
     parse with lxml.html, 
-    use xpath to get list of app IDs, 
-    save
+    use xpath to get list of paragraphs, 
+    save it.
     '''
     #intialize local variables
     paragraphs=[]
 
-    html_file=open(html_file_name)
+    # #if url not local file path
+    if html_file_name[:4]=="http":
+        html_file = urlopen(html_file_name)
+    else: #local file
+        html_file=open(html_file_name)
 
     #use lxml to parse html
     doc = html.parse(html_file).getroot()
@@ -35,16 +40,17 @@ def get_ids_from_html(html_file_name):
 
     #xpath makes a list of all the hrefs in elements of class "card-content-link"
     paragraphs=doc.xpath('//*[@id="main-content"]/article/p/text()')
+    title=doc.xpath('//*[@id="main-content"]/article/header/hgroup/h1/text()')[0]
     
+    #Put paragraphs in one big string
     raw_text=""
     for p in paragraphs:
         raw_text+=p+"\n"
-    print raw_text        
-    ## print ids
-    ## print str(len(ids))
+    # print raw_text        
+
 
     #Save it
-    file_name=html_file_name+"_raw.txt"
+    file_name=title+"_raw.txt"
     save_to_txt(raw_text,file_name)
     print "IDs from "+html_file_name + " were extracted into "+file_name
 
@@ -63,8 +69,8 @@ def main():
     # appCat = getAppCategory()
 
     # print appCat
-
-    get_ids_from_html('example_input.html')
+    #pass local file or url to this function
+    get_ids_from_html('http://espnfc.com/us/en/report/367471/report.html?soccernet=true&cc=5901')
 
 
 if __name__ == '__main__':
