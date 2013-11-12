@@ -2,6 +2,7 @@ from __future__ import division
 from optparse import OptionParser
 from lxml import html
 from urllib import urlopen
+import time
 # from time import strftime
 # today=strftime("%Y-%m-%d") #today's date
 
@@ -18,7 +19,7 @@ def getAppCategory():
     return { 'cat' : option.appCategory }
 
 
-def get_ids_from_html(html_file_name):
+def get_report_text(html_file_name):
     '''
     open the html from disk or url, 
     parse with lxml.html, 
@@ -50,14 +51,14 @@ def get_ids_from_html(html_file_name):
 
 
     #Save it
-    file_name=title+"_raw.txt"
+    file_name="reports/"+title+"_raw.txt"
     save_to_txt(raw_text,file_name)
     print "IDs from "+html_file_name + " were extracted into "+file_name
 
 
 def save_to_txt(text,filename):
     f=open(filename,"w")
-    f.write(text)
+    f.write(text.encode("ascii","replace"))
     f.close()
 
 
@@ -67,10 +68,14 @@ def main():
     # print __doc__
 
     # appCat = getAppCategory()
-
     # print appCat
+
     #pass local file or url to this function
-    get_ids_from_html('http://espnfc.com/us/en/report/367471/report.html?soccernet=true&cc=5901')
+    reports_file=open('report_links.txt','r')
+    for report_url in reports_file.readlines():
+        get_report_text(report_url)
+        time.sleep(.5)#be polite
+
 
 
 if __name__ == '__main__':
