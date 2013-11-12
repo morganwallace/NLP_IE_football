@@ -18,6 +18,9 @@ from pprint import pprint
 
 from os import listdir
 from extractor import featureAggregator
+import random
+import math
+import nltk
 # import re
 
 
@@ -44,19 +47,64 @@ def createCorpus(rdir):
         fObj = open(fname)
         ftxt = fObj.read()
 
-        corpus.append((fname, ftxt))
+
+
+        corpus.append((fname, ftxt, "label"))
         fObj.close()
 
 
     return corpus
 
 
+def splitfeatdata(rawdata, kfold=10):
+    """
+    split feature data and run it through classifier with kfold validation
+    """
+    labeldata = []
+
+    for row in rawdata:
+        label=row[2]
+        labeldata.append((row[3], label))
+
+
+    random.shuffle(labeldata)
+    size = int(math.floor(len(labeldata) / 10.0))
+
+    # code for k-fold validation referred from:
+    # http://stackoverflow.com/questions/16379313/how-to-use-the-a-10-fold-cross-validation-with-naive-bayes-classifier-and-nltk
+    claccuracy = []
+    for i in range(kfold):
+        test_this_round = labeldata[i*size:][:size]
+        train_this_round = labeldata[:i*size] + labeldata[(i+1)*size:]
+
+        acc = myclassifier(train_this_round, test_this_round)
+
+        claccuracy.append(acc)
+
+    return claccuracy
+
+
+
+def myclassifier(train_data, test_data):
+    classifier = nltk.NaiveBayesClassifier.train(train_data)
+
+
+    print classifier.show_most_informative_features()
+    return nltk.classify.accuracy(classifier, test_data)
 
 
 def main():
     reportDir = getReportDir()
     corpus = createCorpus(reportDir)
     featData = featureAggregator(corpus)
+    allacc = splitfeatdata(featData, 10)
+
+
+    print "\n\n"
+    print "-" * 60
+    print "Accuracy Values: %s" % (allacc)
+    print "==" * 60
+    print "Overall Classifier Accuracy %4.4f " % (sum(allacc)/len(allacc))
 
     # pprint(corpus)
     pprint(featData)
