@@ -4,6 +4,8 @@ from urllib import urlopen
 import pickle
 
 def get_rosters():
+	'''Using FoxSports.com, scrape list roster links for a league'''
+	
 	html_file=urlopen("http://msn.foxsports.com/foxsoccer/premierleague/teams")
 	doc = html.parse(html_file).getroot()
 	#converts relative links to absolute links
