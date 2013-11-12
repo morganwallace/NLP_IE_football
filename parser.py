@@ -14,9 +14,10 @@ python_version = "Python 2.7.5 :: Anaconda 1.6.1 (x86_64)"
 
 from __future__ import division
 from optparse import OptionParser
+from pprint import pprint
 
-import os
-import re
+from os import listdir
+# import re
 
 
 def getReportDir():
@@ -34,10 +35,28 @@ def getReportDir():
 
 
 
+def createCorpus(rdir):
+    corpus = []
+    for f in listdir(rdir['dir']):
+        fname = rdir['dir'] + f
+
+        fObj = open(fname)
+        ftxt = fObj.read()
+
+        corpus.append((fname, ftxt))
+        fObj.close()
+
+
+    return corpus
+
+
+
+
 def main():
     reportDir = getReportDir()
+    corpus = createCorpus(reportDir)
 
-    print reportDir
+    pprint(corpus)
 
 
 if __name__ == "__main__":
