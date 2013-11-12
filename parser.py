@@ -17,6 +17,7 @@ from optparse import OptionParser
 from pprint import pprint
 
 from os import listdir
+from extractor import featureAggregator
 # import re
 
 
@@ -55,8 +56,10 @@ def createCorpus(rdir):
 def main():
     reportDir = getReportDir()
     corpus = createCorpus(reportDir)
+    featData = featureAggregator(corpus)
 
-    pprint(corpus)
+    # pprint(corpus)
+    pprint(featData)
 
 
 if __name__ == "__main__":
