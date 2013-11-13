@@ -105,7 +105,7 @@ def main():
     featData = featureAggregator(corpus)
     allacc = splitfeatdata(featData, 10)
 
-    pprint(persons)
+    # pprint(persons)
     # pprint(corpus)
 
     print "\n\n"
@@ -115,7 +115,7 @@ def main():
     print "Overall Classifier Accuracy %4.4f " % (sum(allacc)/len(allacc))
 
     # pprint(corpus)
-    # pprint(featData)
+    pprint(featData)
 
 
 if __name__ == "__main__":
