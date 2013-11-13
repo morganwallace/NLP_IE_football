@@ -56,8 +56,9 @@ def get_report_text(html_file_name):
     save_to_txt(raw_text,file_name)
     print "IDs from "+html_file_name + " were extracted into "+file_name
 
-
+filenames=[]
 def get_team_names(doc,url):
+    global filenames
 
     print url
     team1=doc.xpath('//*[@class="team-name floatright"]/a/text()')[0]
@@ -67,7 +68,12 @@ def get_team_names(doc,url):
 
     team_names=sorted([team1,team2])
     print team_names
-    file_name="teams/"+team_names[0]+"-"+team_names[1]+".txt"
+
+    teams_label="teams/"+team_names[0]+"-"+team_names[1]
+    while teams_label in filenames:
+        teams_label+="-"+str(1)
+    filenames.append(teams_label)
+    file_name=teams_label+".txt"
 
     return file_name
 
