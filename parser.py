@@ -22,7 +22,7 @@ import random
 import math
 import nltk
 
-from xtractor import get_persons
+# from xtractor import get_persons
 # import re
 
 
@@ -99,11 +99,7 @@ def main():
     reportDir = getReportDir()
     corpus = createCorpus(reportDir)
 
-    persons = []
-    for c in corpus:
-        persons.append(get_persons(c[1]))
 
-        break
 
 
     featData = featureAggregator(corpus)

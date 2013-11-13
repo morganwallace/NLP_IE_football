@@ -17,7 +17,7 @@ from __future__ import division
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 
-
+from xtractor import get_persons
 
 def featureAggregator(inputdata):
     """
@@ -45,10 +45,22 @@ def featureExtractor(reportStr):
     """
     featList = {}
 
-    featList['wordCount']       = getWordCount(reportStr)
+    # featList['wordCount']       = getWordCount(reportStr)
+
+
+
+    reportKeywords = get_persons(reportStr)
+
+    for key in reportKeywords:
+        featList[key] = 'T'
+
 
 
     return featList
+
+
+
+
 
 
 
