@@ -47,6 +47,7 @@ def featureExtractor(reportStr):
 
     featList['wordCount']       = getWordCount(reportStr)
 
+
     return featList
 
 

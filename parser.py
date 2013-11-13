@@ -21,6 +21,8 @@ from extractor import featureAggregator
 import random
 import math
 import nltk
+
+from xtractor import get_persons
 # import re
 
 
@@ -96,9 +98,19 @@ def myclassifier(train_data, test_data):
 def main():
     reportDir = getReportDir()
     corpus = createCorpus(reportDir)
+
+    persons = []
+    for c in corpus:
+        persons.append(get_persons(c[1]))
+
+        break
+
+
     featData = featureAggregator(corpus)
     allacc = splitfeatdata(featData, 10)
 
+    pprint(persons)
+    # pprint(corpus)
 
     print "\n\n"
     print "-" * 60
@@ -107,7 +119,7 @@ def main():
     print "Overall Classifier Accuracy %4.4f " % (sum(allacc)/len(allacc))
 
     # pprint(corpus)
-    pprint(featData)
+    # pprint(featData)
 
 
 if __name__ == "__main__":
