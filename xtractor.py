@@ -18,7 +18,9 @@ def get_persons(text):
             if hasattr(chunk, 'node') and (chunk.node == "PERSON" or chunk.node == "ORGANIZATION"):
                 player = ' '.join(c[0] for c in chunk.leaves())
                 players.append(player)
-    return players
+
+
+    return set(normalize_names(players))
 
 
 # Replace names that appear in shorter forms into their longer forms.
