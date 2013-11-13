@@ -18,6 +18,9 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 
 from xtractor import get_persons
+# import json
+from ast import literal_eval
+
 
 def featureAggregator(inputdata):
     """
@@ -27,7 +30,7 @@ def featureAggregator(inputdata):
     outputdata = []
     for inputLine in inputdata:
         # aggregate those values into 1 tuple of features
-        features = featureExtractor(inputLine[1])
+        features = featureExtractor(inputLine[1], inputLine[0])
 
         # append those features
         inputLineList = list(inputLine)
@@ -39,7 +42,7 @@ def featureAggregator(inputdata):
 
 
 
-def featureExtractor(reportStr):
+def featureExtractor(reportStr, reportLabel):
     """
     Extract Features
     """
@@ -47,14 +50,25 @@ def featureExtractor(reportStr):
 
     # featList['wordCount']       = getWordCount(reportStr)
 
+    rosterObj = open('rosters.json')
+    rosterStr = rosterObj.read()
+    roster = literal_eval(rosterStr)
+    rosterObj.close()
 
+    reportObj = reportLabel.split('/')
+    rosterlabel = reportObj[-1].lower()
+
+    teamnameSplit = rosterlabel.split('-')
+
+    teamname = teamnameSplit[0].replace(' ', '-')
 
     reportKeywords = get_persons(reportStr)
 
     for key in reportKeywords:
-        featList[key] = 'T'
-
-
+        if key in roster[teamname]:
+            featList[key] = 'T'
+        else:
+            featList[key] = 'F'
 
     return featList
 

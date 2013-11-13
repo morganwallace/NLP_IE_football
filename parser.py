@@ -16,11 +16,13 @@ from __future__ import division
 from optparse import OptionParser
 from pprint import pprint
 
+import nltk
+from nltk import metrics
 from os import listdir
 from extractor import featureAggregator
 import random
 import math
-import nltk
+# import nltk
 
 # from xtractor import get_persons
 # import re
@@ -50,11 +52,16 @@ def createCorpus(rdir):
         ftxt = fObj.read()
 
 
+        labelSplit = fname.split('/')
+        label = labelSplit[1].split('-')
+        corpus.append((fname, ftxt, label[0]))
 
-        corpus.append((fname, ftxt, "label"))
+
         fObj.close()
 
+        # break
 
+    # print "corpus:", corpus
     return corpus
 
 
@@ -64,10 +71,14 @@ def splitfeatdata(rawdata, kfold=10):
     """
     labeldata = []
 
-    for row in rawdata:
-        label=row[2]
-        labeldata.append((row[3], label))
 
+    # print "rawdata:", rawdata
+    for row in rawdata:
+        # label=row[2]
+        labeldata.append((row[3], row[2]))
+
+
+    # print "labeldata:", labeldata
 
     random.shuffle(labeldata)
     size = int(math.floor(len(labeldata) / 10.0))
@@ -92,6 +103,26 @@ def myclassifier(train_data, test_data):
 
 
     print classifier.show_most_informative_features()
+
+
+    # predictions = []
+    # reference = []
+    # for t in test_data:
+    #     predictions.append(nltk.classify(t))
+    #     reference.append(t[1])
+
+    # precision = metrics.precision(set(reference), set(predictions))
+    # recall = metrics.recall(set(reference), set(predictions))
+    # f_measure = metrics.f_measure(set(reference), set(predictions))
+
+    # print "Precision: \t%s" % (precision)
+    # print "Recall: \t%s" % (recall)
+    # print "F Measure: \t%s" % (f_measure)
+
+    # return nltk.classify.accuracy(classifier, test_data)
+
+
+
     return nltk.classify.accuracy(classifier, test_data)
 
 
@@ -105,6 +136,7 @@ def main():
     featData = featureAggregator(corpus)
     allacc = splitfeatdata(featData, 10)
 
+
     # pprint(persons)
     # pprint(corpus)
 
@@ -115,7 +147,7 @@ def main():
     print "Overall Classifier Accuracy %4.4f " % (sum(allacc)/len(allacc))
 
     # pprint(corpus)
-    pprint(featData)
+    # pprint(featData)
 
 
 if __name__ == "__main__":
